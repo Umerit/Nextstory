@@ -12,9 +12,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,19 +30,6 @@ import coil.compose.AsyncImage
 import com.nextory.testapp.R
 import com.nextory.testapp.data.Book
 import com.nextory.testapp.ui.components.ListItem
-
-// @Composable
-// fun BookList(
-// bookListViewModel: BookListViewModel,
-//    onNavigationRequested: (itemId: String) -> Unit
-// ) {
-
-//    BookList(
-//        pagedBooks = pagedBooks,
-//        onSearchTextChanged = {
-//        }
-//    )
-//}
 
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -99,7 +86,7 @@ fun BookList(
             }
 
             items(pagedBooks) { book ->
-                BookItem(book = book!! , navigateToBookDetails)
+                BookItem(book = book!!, navigateToBookDetails)
             }
         }
     }
@@ -134,10 +121,11 @@ private fun BookItem(book: Book, onItemClicked: (book: Book) -> Unit = { }) {
             )
         },
         secondaryText = { Text(book.author) },
+
         trailing = {
-            IconButton(onClick = { }) {
+            if (book.favorite) {
                 Icon(
-                    imageVector = Icons.Outlined.Favorite,
+                    imageVector = Icons.Default.Favorite,
                     contentDescription = "Clear Icon"
                 )
             }
