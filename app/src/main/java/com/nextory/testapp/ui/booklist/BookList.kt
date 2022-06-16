@@ -1,5 +1,6 @@
 package com.nextory.testapp.ui.booklist
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -10,6 +11,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -21,28 +24,25 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import com.nextory.testapp.R
 import com.nextory.testapp.data.Book
 import com.nextory.testapp.ui.components.ListItem
-import com.nextory.testapp.ui.utils.rememberFlowWithLifecycle
 
-@Composable
-fun BookList(
-    bookListViewModel: BookListViewModel = hiltViewModel()
-) {
-    val pagedBooks = rememberFlowWithLifecycle(bookListViewModel.pagedBooks)
-        .collectAsLazyPagingItems()
-    BookList(
-        pagedBooks = pagedBooks,
-        onSearchTextChanged = {
-        }
-    )
-}
+// @Composable
+// fun BookList(
+// bookListViewModel: BookListViewModel,
+//    onNavigationRequested: (itemId: String) -> Unit
+// ) {
+
+//    BookList(
+//        pagedBooks = pagedBooks,
+//        onSearchTextChanged = {
+//        }
+//    )
+//}
 
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -50,9 +50,10 @@ fun BookList(
     ExperimentalComposeUiApi::class
 )
 @Composable
-private fun BookList(
+fun BookList(
     pagedBooks: LazyPagingItems<Book>,
-    onSearchTextChanged: (String) -> Unit = {}
+    onSearchTextChanged: (String) -> Unit = {},
+    navigateToBookDetails: (book: Book) -> Unit
 ) {
     Scaffold(topBar = { BookListTopBar() }) { paddingValues ->
         LazyColumn(
@@ -98,7 +99,7 @@ private fun BookList(
             }
 
             items(pagedBooks) { book ->
-                BookItem(book = book!!)
+                BookItem(book = book!! , navigateToBookDetails)
             }
         }
     }
@@ -117,9 +118,12 @@ private fun BookListTopBar() {
 }
 
 @Composable
-private fun BookItem(book: Book) {
+private fun BookItem(book: Book, onItemClicked: (book: Book) -> Unit = { }) {
     ListItem(
-        modifier = Modifier.clickable { },
+        modifier = Modifier.clickable {
+            Log.d("OnBookItemClicked", "Clicked")
+            onItemClicked(book)
+        },
         icon = {
             AsyncImage(
                 model = book.imageUrl,
@@ -129,7 +133,15 @@ private fun BookItem(book: Book) {
                     .clip(RoundedCornerShape(8.dp))
             )
         },
-        secondaryText = { Text(book.author) }
+        secondaryText = { Text(book.author) },
+        trailing = {
+            IconButton(onClick = { }) {
+                Icon(
+                    imageVector = Icons.Outlined.Favorite,
+                    contentDescription = "Clear Icon"
+                )
+            }
+        }
     ) {
         Text(book.title)
     }

@@ -5,18 +5,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.nextory.testapp.ui.booklist.BookList
+import com.nextory.testapp.navigation.NavGraph
 import com.nextory.testapp.ui.theme.TestAppTheme
 
-private sealed class Screen(val route: String) {
-    object BookList : Screen("book_list")
-}
 
 @OptIn(
     ExperimentalMaterialNavigationApi::class,
@@ -37,10 +32,6 @@ fun TestApp() {
 
         val bottomSheetNavigator = rememberBottomSheetNavigator()
         val navController = rememberAnimatedNavController(bottomSheetNavigator)
-        AnimatedNavHost(navController, startDestination = Screen.BookList.route) {
-            composable(route = Screen.BookList.route) {
-                BookList()
-            }
-        }
+        NavGraph(navController = navController)
     }
 }
