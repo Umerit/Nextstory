@@ -25,14 +25,18 @@ import com.nextory.testapp.R
     ExperimentalComposeUiApi::class
 )
 @Composable
-fun BookDetails(navigateToBookList: () -> Unit
+fun BookDetails(
+    author: String?,
+    description: String?,
+    imageURL: String?,
+    navigateToBookList: () -> Unit
 ) {
     Scaffold(topBar = { BookDetailsTopBar(navigateToBookList) }) { paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues),
         ) {
             ImageCard()
-            Text("Book Author" ,
+            Text(author.toString() ,
                 fontSize = 40.sp,
                 modifier = Modifier.padding(start = 16.dp))
             Text("Book Description" ,

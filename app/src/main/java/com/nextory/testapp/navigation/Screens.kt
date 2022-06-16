@@ -4,5 +4,5 @@ import java.io.Serializable
 
 sealed class Screens(val route: String) {
     object BookList: Screens("BookList")
-    object Detail: Screens("DetailScreen")
+    object Detail: Screens("DetailScreen?author={author}&description={description}")
 }

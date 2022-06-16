@@ -4,6 +4,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -20,41 +22,70 @@ import com.nextory.testapp.ui.utils.rememberFlowWithLifecycle
     ExperimentalAnimationApi::class
 )
 @Composable
-fun NavGraph (navController: NavHostController){
+fun NavGraph(navController: NavHostController) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screens.BookList.route)
+        startDestination = Screens.BookList.route
+    )
     {
-        composable(route = Screens.BookList.route){
+        composable(route = Screens.BookList.route) {
             BookListDestination(navController = navController)
         }
-        composable(route = Screens.Detail.route){
-            BookDetailDestination(navController = navController)
+        composable(route = Screens.Detail.route,
+            arguments = listOf(
+                navArgument("author") {
+                    type = NavType.StringType
+                }, navArgument("description") {
+                    type = NavType.StringType
+                }, navArgument("imageUrl") {
+                    type = NavType.StringType
+                })
+        ) { backStackEntry ->
+            BookDetailDestination(
+                navController = navController,
+                author = backStackEntry.arguments?.getString("author"),
+                description = backStackEntry.arguments?.getString("description"),
+                imageURL = backStackEntry.arguments?.getString("imageUrl")
+            )
         }
+
     }
 }
 
 @Composable
-private fun BookListDestination(navController: NavHostController) {
-    val bookListViewModel : BookListViewModel = hiltViewModel()
+private fun BookListDestination(
+    navController: NavHostController,
+) {
+    val bookListViewModel: BookListViewModel = hiltViewModel()
     val pagedBooks = rememberFlowWithLifecycle(bookListViewModel.pagedBooks)
         .collectAsLazyPagingItems()
-        BookList(
+    BookList(
         pagedBooks = pagedBooks,
         onSearchTextChanged = {
         },
-            navigateToBookDetails = {
-                navController.navigate(Screens.Detail.route)
-            }
-        )
+        navigateToBookDetails = {
+            navController.navigate(
+                Screens.Detail.route + "?"+"author=${it.author}&"+"description=${it.description}&"+"imageUrl=${it.imageUrl}"
+            )
+        }
+    )
 }
+
 @Composable
-private fun BookDetailDestination(navController: NavHostController) {
-    val bookListViewModel : BookDetailedListViewModel = hiltViewModel()
+private fun BookDetailDestination(
+    navController: NavHostController,
+    author: String?,
+    description: String?,
+    imageURL: String?
+) {
+    val bookListViewModel: BookDetailedListViewModel = hiltViewModel()
     BookDetails(
         navigateToBookList = {
             navController.navigate(Screens.BookList.route)
-        }
+        },
+        author = author,
+        description=description,
+        imageURL = imageURL
     )
 }
 
