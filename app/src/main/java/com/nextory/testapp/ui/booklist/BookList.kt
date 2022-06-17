@@ -1,6 +1,6 @@
 package com.nextory.testapp.ui.booklist
 
-import android.util.Log
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -76,7 +76,7 @@ fun BookList(
                             IconButton(onClick = { searchText = "" }) {
                                 Icon(
                                     imageVector = Icons.Filled.Close,
-                                    contentDescription = null
+                                    contentDescription = stringResource(R.string.fav_iconfilled_close_content_description)
                                 )
                             }
                         }
@@ -131,7 +131,7 @@ private fun BookItem(book: Book, onItemClicked: (book: Book) -> Unit = { }) {
             if (book.favorite) {
                 Icon(
                     imageVector = Icons.Default.Favorite,
-                    contentDescription = "Favorite icon"
+                    contentDescription = stringResource(R.string.fav_icon_content_description)
                 )
             }
         }

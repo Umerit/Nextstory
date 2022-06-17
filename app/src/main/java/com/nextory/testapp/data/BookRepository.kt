@@ -1,6 +1,5 @@
 package com.nextory.testapp.data
 
-import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

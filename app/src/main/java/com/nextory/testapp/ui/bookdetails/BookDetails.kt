@@ -16,9 +16,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.nextory.testapp.R
 import com.nextory.testapp.data.Book
 
 
@@ -80,7 +82,7 @@ private fun BookDetailsTopBar(
             IconButton(onClick = { navigateToBookList() }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back Button"
+                    contentDescription = stringResource(R.string.back_button_content_description)
                 )
             }
         },
@@ -91,7 +93,7 @@ private fun BookDetailsTopBar(
             }) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "Add to book to Favorite list"
+                    contentDescription = stringResource(R.string.add_book_to_fav_list)
                 )
             }
         }

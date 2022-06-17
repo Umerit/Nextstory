@@ -2,4 +2,8 @@
     <string name="app_name">Test App</string>
     <string name="booklist_title">Book List</string>
     <string name="search_placeholder">Search</string>
+    <string name="fav_iconfilled_close_content_description">favorite fill</string>
+    <string name="fav_icon_content_description">Favorite icon</string>
+    <string name="back_button_content_description">Back Button</string>
+    <string name="add_book_to_fav_list">Add to book to Favorite list</string>
 </resources>

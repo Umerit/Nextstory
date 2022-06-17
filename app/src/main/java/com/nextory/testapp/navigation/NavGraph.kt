@@ -1,13 +1,9 @@
 package com.nextory.testapp.navigation
 
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.paging.cachedIn
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.map
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -16,9 +12,6 @@ import com.nextory.testapp.ui.bookdetails.BookDetailedListViewModel
 import com.nextory.testapp.ui.bookdetails.BookDetails
 import com.nextory.testapp.ui.booklist.BookList
 import com.nextory.testapp.ui.booklist.BookListViewModel
-import com.nextory.testapp.ui.utils.rememberFlowWithLifecycle
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 
 
 @OptIn(
