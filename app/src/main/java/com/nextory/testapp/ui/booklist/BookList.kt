@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,24 +23,32 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import com.nextory.testapp.R
 import com.nextory.testapp.data.Book
 import com.nextory.testapp.ui.components.ListItem
+import com.nextory.testapp.ui.utils.rememberFlowWithLifecycle
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
     ExperimentalComposeUiApi::class
 )
+
 @Composable
 fun BookList(
-    pagedBooks: LazyPagingItems<Book>,
-    onSearchTextChanged: (String) -> Unit = {},
+    viewModelBookList: BookListViewModel,
     navigateToBookDetails: (book: Book) -> Unit
 ) {
+    var searchText by remember { mutableStateOf("") }
+    var pagedBooks = rememberFlowWithLifecycle(viewModelBookList.booksLists())
+        .collectAsLazyPagingItems()
+    var searchBooks = rememberFlowWithLifecycle(viewModelBookList.searchBook(searchText))
+        .collectAsLazyPagingItems()
     Scaffold(topBar = { BookListTopBar() }) { paddingValues ->
         LazyColumn(
             modifier = Modifier.padding(paddingValues),
@@ -50,7 +57,6 @@ fun BookList(
                 .asPaddingValues()
         ) {
             stickyHeader {
-                var searchText by remember { mutableStateOf("") }
                 val keyboardController = LocalSoftwareKeyboardController.current!!
                 val focusRequester = remember { FocusRequester() }
                 OutlinedTextField(
@@ -59,8 +65,8 @@ fun BookList(
                         .focusRequester(focusRequester),
                     value = searchText,
                     onValueChange = {
-                        searchText = it
-                        onSearchTextChanged(it)
+                       searchText = it
+
                     },
                     placeholder = {
                         Text(text = stringResource(R.string.search_placeholder))
@@ -84,8 +90,7 @@ fun BookList(
                     colors = TextFieldDefaults.textFieldColors()
                 )
             }
-
-            items(pagedBooks) { book ->
+            items(if(searchText.isNotEmpty()) searchBooks else pagedBooks) { book ->
                 BookItem(book = book!!, navigateToBookDetails)
             }
         }
@@ -104,11 +109,12 @@ private fun BookListTopBar() {
     )
 }
 
+
+
 @Composable
 private fun BookItem(book: Book, onItemClicked: (book: Book) -> Unit = { }) {
     ListItem(
         modifier = Modifier.clickable {
-            Log.d("OnBookItemClicked", "Clicked")
             onItemClicked(book)
         },
         icon = {
@@ -121,12 +127,11 @@ private fun BookItem(book: Book, onItemClicked: (book: Book) -> Unit = { }) {
             )
         },
         secondaryText = { Text(book.author) },
-
         trailing = {
             if (book.favorite) {
                 Icon(
                     imageVector = Icons.Default.Favorite,
-                    contentDescription = "Clear Icon"
+                    contentDescription = "Favorite icon"
                 )
             }
         }

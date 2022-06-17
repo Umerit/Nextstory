@@ -13,7 +13,6 @@ interface BookDao {
     @Update
     suspend fun updateBook(book: Book)
 
-    @Query("select * from book where book.author = :searchKey")
-    fun searchBooks(searchKey: String): PagingSource<Int, Book>
-
+    @Query("SELECT * FROM book WHERE title LIKE '%' || :queryString || '%' OR author LIKE '%' || :queryString || '%'")
+    fun searchWithTitleAndAuthor(queryString: String): PagingSource<Int, Book>
 }
